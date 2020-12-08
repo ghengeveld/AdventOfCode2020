@@ -3,6 +3,7 @@ const fs = require("fs")
 const input = fs.readFileSync(__dirname + "/input.txt", "utf8")
 const lines = input.split("\n").filter(Boolean)
 
+// Part 1 (in a prematurely optimized way)
 // const [lower, upper] = lines.reduce(
 //   (acc, line) => {
 //     const number = parseInt(line)
@@ -15,10 +16,11 @@ const lines = input.split("\n").filter(Boolean)
 
 // for (const low of lower) {
 //   for (const up of upper) {
-//     if (low + up === 2020) return console.log(low, up, low * up)
+//     if (low + up === 2020) return console.log(low * up)
 //   }
 // }
 
+// Part 2
 const numbers = lines.map((line) => parseInt(line, 10))
 
 for (const i in numbers) {
@@ -27,7 +29,7 @@ for (const i in numbers) {
     for (const k in numbers) {
       if (i === k || j === k) continue
       const [a, b, c] = [numbers[i], numbers[j], numbers[k]]
-      if (a + b + c === 2020) return console.log(a, b, c, a * b * c)
+      if (a + b + c === 2020) return console.log(a * b * c)
     }
   }
 }
