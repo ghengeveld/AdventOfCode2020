@@ -29,3 +29,30 @@ const total = lines.reduce((sum, line) => {
 }, 0)
 
 console.log(total)
+
+// Part 2
+const add = new RegExp(/\d+ \+ \d+/g)
+const mul = new RegExp(/\d+ \* \d+/g)
+const grp = new RegExp(/\(([^()]+)\)/)
+
+const run = (line) => {
+  while (grp.test(line)) {
+    line = line.replace(grp, (_, p1) => run(p1))
+  }
+  while (add.test(line)) {
+    line = line.replace(add, eval)
+    line = line.replace(parens, eval)
+  }
+  while (mul.test(line)) {
+    line = line.replace(mul, eval)
+    line = line.replace(parens, eval)
+  }
+  return line
+}
+
+const res = lines.reduce((sum, line) => {
+  while (expr.test(line)) line = run(line)
+  return sum + parseInt(line)
+}, 0)
+
+console.log(res)
