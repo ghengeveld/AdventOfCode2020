@@ -43,4 +43,46 @@ for (const near of allnearby) {
   invalids.forEach((n) => invalidnums.push(n))
   if (invalids.length === 0) nearby.push(numbers)
 }
-console.log(invalidnums.reduce((sum, n) => sum + n, 0))
+
+// Part 1
+// console.log(invalidnums.reduce((sum, n) => sum + n, 0))
+
+// Part 2
+const tickets = nearby.concat([mine])
+
+const mapped = []
+for (let i = 0; i < tickets.length; i++) {
+  const ticket = tickets[i]
+  const rules = []
+  for (let j = 0; j < ticket.length; j++) {
+    const prevFields = mapped[i - 1]
+    const settledRules = rules.reduce(
+      (acc, fields) => (fields.length === 1 ? acc.concat(fields) : acc),
+      []
+    )
+    const fields = rulemap
+      .filter(([field, ruleset]) => {
+        if (!ruleset.has(ticket[j])) return false
+        if (prevFields && !prevFields[j].includes(field)) return false
+        if (settledRules.includes(field)) return false
+        return true
+      })
+      .map(([field]) => field)
+    rules.push(fields)
+  }
+  mapped.push(rules)
+}
+
+const settled = [...new Array(mine.length)]
+while (settled.some((item) => !item)) {
+  for (const rules of mapped) {
+    for (let i = 0; i < rules.length; i++) {
+      const fields = rules[i]
+      if (fields.length === 1) settled[i] = fields[0]
+      else rules[i] = fields.filter((field) => !settled.includes(field))
+    }
+  }
+}
+
+const result = settled.reduce((p, f, i) => (f.startsWith("departure") ? p * mine[i] : p), 1)
+console.log(result)
